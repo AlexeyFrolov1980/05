@@ -19,6 +19,12 @@
 
 
 def put_to_account(sum, current_sum):
+    '''
+    :param sum:
+    :param current_sum:
+    :return:
+    '''
+
     if sum>0:
         return sum+current_sum
     else:
