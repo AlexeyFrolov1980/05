@@ -5,18 +5,19 @@ import victory
 import BankAccount
 
 
-MAIN_MENU={ 1: 'создать папку',
-            2: 'удалить (файл/папку)',
-            3: 'копировать (файл/папку)',
-            4: 'просмотр содержимого рабочей директории',
-            5: 'посмотреть только папки',
-            6: 'посмотреть только файлы',
-            7: 'просмотр информации об операционной системе',
-            8: 'создатель программы',
-            9: 'играть в викторину',
-            10: 'мой банковский счет',
-            11: 'смена рабочей директории (*необязательный пункт)',
-            12: 'выход'}
+MAIN_MENU={ '1': 'создать папку',
+            '2': 'удалить (файл/папку)',
+            '3': 'копировать (файл/папку)',
+            '4': 'просмотр содержимого рабочей директории',
+            '5': 'посмотреть только папки',
+            '6': 'посмотреть только файлы',
+            '7': 'просмотр информации об операционной системе',
+            '8': 'создатель программы',
+            '9': 'играть в викторину',
+            '10': 'мой банковский счет',
+            '11': 'смена рабочей директории (*необязательный пункт)',
+            '12': 'сохранить имена объектов в папке в файл',
+            '13': 'выход'}
 
 current_dir = os.getcwd()
 
@@ -28,15 +29,29 @@ def show_menu(menu):
 
         print('')
 
-        choice = int(input('Выберите пункт меню: '))
+        choice = input('Выберите пункт меню: ')
         if choice in menu:
             return choice
         else:
             print('Неверный пункт меню')
 
 
-account_sum = 0.0
-purches = []
+def save_dir_tofile(lst_dir, file_name):
+    obj = os.scandir(lst_dir)
+    files = 'Файлы\n'
+    dirs = 'Каталоги\n'
+
+    for entry in obj:
+        if entry.is_dir():
+            dirs += entry.name + '\n'
+        if entry.is_file():
+            files += entry.name + '\n'
+
+    with open(file_name, "w") as file:
+        file.write(files)
+        file.write(dirs)
+
+
 
 while True:
 
@@ -45,7 +60,7 @@ while True:
 
     choice=show_menu(MAIN_MENU)
 
-    if choice == 1:
+    if choice == '1':
         #- создать папку
         #после выбора пользователь вводит название (папки,
         #создаем) её в рабочей директории;
@@ -57,7 +72,7 @@ while True:
         except:
             print('Ощибка при создании папки')
 
-    elif choice == 2:
+    elif choice == '2':
         #- удалить (файл/папку)
         #после выбора пользователь вводит название папки или файла,
         #удаляем из рабочей директории если такой есть;
@@ -85,7 +100,7 @@ while True:
             print('Ощибка при удалении папки или файла')
 
 
-    elif choice == 3:
+    elif choice == '3':
         #- копировать (файл/папку)
         #после выбора пользователь вводит название папки/файла
         #и новое название папки/файла. Копируем;
@@ -111,7 +126,7 @@ while True:
         if not copy_result:
             print('Ощибка при копировании')
         pass
-    elif choice == 4:
+    elif choice == '4':
         #- просмотр содержимого рабочей директории
         #вывод всех объектов в рабочей папке;
         dir_list = os.listdir(current_dir)
@@ -119,37 +134,37 @@ while True:
         # prints all files
         print(dir_list)
         pass
-    elif choice == 5:
+    elif choice == '5':
         #- посмотреть только папки
         #вывод только папок которые находятся в рабочей папке;
         onlydirs = [d for d in os.listdir(current_dir) if os.path.isdir(os.path.join(current_dir, d))]
         print("Папки в каталоге'", current_dir, "' :")
         print(onlydirs)
 
-    elif choice == 6:
+    elif choice == '6':
         #вывод только папок которые находятся в рабочей папке;
         #- посмотреть только файлы
         onlyfiles = [f for f in os.listdir(current_dir) if os.path.isfile(os.path.join(current_dir, f))]
         print("Файлы в каталоге'", current_dir, "' :")
         print(onlyfiles)
 
-    elif choice == 7:
+    elif choice == '7':
         #вывести информацию об операционной системе (можно использовать пример из 1-го урока);
         print("Информация об ОС")
         print(platform.uname())
-    elif choice == 8:
+    elif choice == '8':
         #- создатель программы вывод информации о создателе программы;
         print("Создатель программы: Алексей Фролов")
-    elif choice == 9:
+    elif choice == '9':
         #- играть в викторину запуск игры викторина из предыдущего дз;
         victory.play_victorine()
-    elif choice == 10:
+    elif choice == '10':
         #- мой банковский счет
         #запуск программы для работы с банковским счетом из предыдущего дз
         # (задание учебное, после выхода из программы управлением счетом в главной программе сумму
         # и историю покупок можно не запоминать);
-        account_sum, purches= BankAccount.run_accout_menu(account_sum, purches)
-    elif choice == 11:
+        BankAccount.run_accout_menu()
+    elif choice == '11':
        #- смена рабочей директории (*необязательный пункт)
        #усложненное задание пользователь вводит полный /home/user/... или относительный user/my/... путь.
        new_dir=input("Введите новый рабочий каталог: ")
@@ -160,7 +175,9 @@ while True:
        else:
            print(f'Такого каталога {new_dir} не существует:')
 
+    elif choice == '12':
+        save_dir_tofile(current_dir, 'listdir.txt')
 
-    elif choice == 12:
+    elif choice == '13':
         # Выход
         break

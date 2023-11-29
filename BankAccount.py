@@ -1,4 +1,9 @@
+import os
+import json
 
+ACCOUNT_FILE_NAME = 'current_account.txt'
+
+PURCHES_FILE_NAME = 'purches_history.txt'
 
 """
 МОДУЛЬ 3
@@ -18,15 +23,18 @@
 """
 
 
-def put_to_account(sum, current_sum):
+def put_to_account(sum_to_put):
     '''
     :param sum:
     :param current_sum:
     :return:
     '''
 
-    if sum>0:
-        return sum+current_sum
+    if sum_to_put>0:
+        current_sum=get_account_value()
+        res = sum_to_put+current_sum
+        save_account(res)
+        return res
     else:
         print("Сумма должна быть больше 0")
         return current_sum
@@ -43,13 +51,17 @@ def put_to_account(sum, current_sum):
 """
 
 
-def purche(account_sum, purches):
-    sum=float(input('Введите сумму покупки:'))
-    if sum<=account_sum:
-        purche_name=input('Введите название покупки:')
-        account_sum -= sum
+def purche():
+    sum_input = float(input('Введите сумму покупки:'))
+    account_sum = get_account_value()
+    if sum_input<=account_sum:
+        purche_name =input('Введите название покупки:')
+        purches = get_purches()
+        account_sum -=  sum_input
+        purches.append([purche_name, sum_input])
+        save_account(account_sum)
+        save_purch(purches)
 
-        purches.append([purche_name,sum])
     else:
         print('денег не хватает')
 
@@ -81,8 +93,50 @@ def print_purches_history(purches):
 
 
 
-def run_accout_menu(account_sum, purches):
+def get_account_value(account_value_file_name=ACCOUNT_FILE_NAME):
+    #Проверчем, что файл для записи сведений о сумме на счете еесть
+    if os.path.exists(account_value_file_name):
+        #Читаем из файла сумму
+        with open(account_value_file_name, 'r', encoding='utf-8') as f:
+            res = float(f.read())
+        return res
+    else:
+        return 0
+
+def save_account(accuont_sum, account_value_file_name=ACCOUNT_FILE_NAME):
+    with open(account_value_file_name, 'w', encoding='utf-8') as f:
+        f.write(str(accuont_sum))
+    return accuont_sum
+
+
+def save_purch(purches, purches_file_name=PURCHES_FILE_NAME):
+    with open(purches_file_name, 'w') as f:
+        json.dump(purches, f)
+
+
+def get_purches(purches_file_name = PURCHES_FILE_NAME):
+    if os.path.exists(purches_file_name):
+        #Читаем из файла сумму
+        with open(purches_file_name, 'r') as f:
+            res = json.load(f)
+        return res
+    else:
+        return list([])
+
+
+
+
+
+
+
+def run_accout_menu():
+
+
+
     while True:
+        account_sum=get_account_value()
+        purches=get_purches()
+
         print('1. пополнение счета')
         print('2. покупка')
         print('3. история покупок')
@@ -94,15 +148,19 @@ def run_accout_menu(account_sum, purches):
 
         choice = input('Выберите пункт меню: ')
         if choice == '1':
-            sum=float(input('Введите сумму для пополнения: '))
-            account_sum=put_to_account(sum, account_sum)
+            sum_to_put=float(input('Введите сумму для пополнения: '))
+            put_to_account(sum_to_put)
 
         elif choice == '2':
-            account_sum, purches=purche(account_sum, purches)
+            purche()
 
         elif choice == '3':
+            purches=get_purches()
             print_purches_history(purches)
         elif choice == '4':
-            return account_sum, purches
+            return 0
         else:
             print('Неверный пункт меню')
+
+
+#run_accout_menu()
