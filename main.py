@@ -148,7 +148,7 @@ while True:
         #запуск программы для работы с банковским счетом из предыдущего дз
         # (задание учебное, после выхода из программы управлением счетом в главной программе сумму
         # и историю покупок можно не запоминать);
-        account_sum, purches=BankAccount.run_accout_menu(account_sum, purches)
+        account_sum, purches= BankAccount.run_accout_menu(account_sum, purches)
     elif choice == 11:
        #- смена рабочей директории (*необязательный пункт)
        #усложненное задание пользователь вводит полный /home/user/... или относительный user/my/... путь.
