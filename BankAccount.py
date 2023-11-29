@@ -29,6 +29,7 @@ def put_to_account(sum, current_sum):
         return sum+current_sum
     else:
         print("Сумма должна быть больше 0")
+        return current_sum
 
 
 """
